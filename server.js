@@ -92,7 +92,12 @@ async function getOpenAIModels() {
       const id = String(model.id || "");
       return (/^gpt-/i.test(id) || /^o[1-9](?:-|$)/i.test(id)) && !blocked.test(id);
     })
-    .sort((a, b) => (Number(b.created) || 0) - (Number(a.created) || 0) || String(a.id).localeCompare(String(b.id)))
+    .sort((a, b) => {
+      const rank = (id) => /(luna|mini|nano)/i.test(id) ? 0 : /(sol|flash-lite)/i.test(id) ? 1 : 2;
+      return rank(a.id) - rank(b.id) ||
+        (Number(b.created) || 0) - (Number(a.created) || 0) ||
+        String(a.id).localeCompare(String(b.id));
+    })
     .slice(0, 30)
     .map((model) => ({ id: model.id, label: model.id }));
   if (models.length === 0) throw new Error("No text-chat models were returned for the configured OpenAI key.");
@@ -114,6 +119,16 @@ async function getGeminiModels() {
       return id && Array.isArray(model.supportedGenerationMethods) &&
         model.supportedGenerationMethods.includes("generateContent") &&
         !/(embedding|tts|audio|image-generation|robotics)/i.test(id);
+    })
+    .sort((a, b) => {
+      const rank = (model) => {
+        const id = String(model.name || "");
+        if (/flash-lite/i.test(id)) return 0;
+        if (/flash/i.test(id)) return 1;
+        if (/pro/i.test(id)) return 3;
+        return 2;
+      };
+      return rank(a) - rank(b) || String(a.name).localeCompare(String(b.name));
     })
     .slice(0, 35)
     .map((model) => {
