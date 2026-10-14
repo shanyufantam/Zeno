@@ -423,4 +423,129 @@ document.addEventListener("click", (event) => {
   }
 });
 
+
+/* Offline notes: saved in this app profile, with no server or API key required. */
+const notesLink = document.getElementById("notesLink");
+const notesOverlay = document.getElementById("notesOverlay");
+const closeNotes = document.getElementById("closeNotes");
+const noteForm = document.getElementById("noteForm");
+const noteTitle = document.getElementById("noteTitle");
+const noteBody = document.getElementById("noteBody");
+const notesList = document.getElementById("notesList");
+const noteCount = document.getElementById("noteCount");
+const NOTES_STORAGE_KEY = "zeno.offlineNotes.v1";
+let offlineNotes = [];
+let editingNoteId = null;
+
+function readOfflineNotes() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(NOTES_STORAGE_KEY) || "[]");
+    offlineNotes = Array.isArray(stored) ? stored.filter((n) => n && typeof n.id === "string" && typeof n.title === "string" && typeof n.body === "string") : [];
+  } catch {
+    offlineNotes = [];
+    showToast("Zeno couldn't read saved notes from this app profile.");
+  }
+  renderOfflineNotes();
+}
+function persistOfflineNotes() {
+  try {
+    localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(offlineNotes));
+    return true;
+  } catch {
+    showToast("Could not save notes. This app profile may be out of storage space.");
+    return false;
+  }
+}
+function renderOfflineNotes() {
+  notesList.replaceChildren();
+  noteCount.textContent = offlineNotes.length + " note" + (offlineNotes.length === 1 ? "" : "s") + " saved";
+  if (!offlineNotes.length) {
+    const empty = document.createElement("p");
+    empty.className = "notes-empty";
+    empty.textContent = "No notes yet. Create your first one above.";
+    notesList.appendChild(empty);
+    return;
+  }
+  offlineNotes.slice().sort((a,b) => b.updatedAt - a.updatedAt).forEach((note) => {
+    const card = document.createElement("article");
+    card.className = "note-card";
+    const title = document.createElement("h3");
+    title.textContent = note.title;
+    const body = document.createElement("p");
+    body.textContent = note.body || "No extra details.";
+    const date = document.createElement("small");
+    date.textContent = "Updated " + new Date(note.updatedAt).toLocaleString();
+    const actions = document.createElement("div");
+    actions.className = "note-card-actions";
+    const edit = document.createElement("button");
+    edit.type = "button"; edit.className = "note-edit"; edit.textContent = "Edit";
+    edit.addEventListener("click", () => {
+      editingNoteId = note.id;
+      noteTitle.value = note.title;
+      noteBody.value = note.body;
+      document.getElementById("saveNote").textContent = "Update note";
+      noteTitle.focus();
+      notesOverlay.querySelector(".notes-panel").scrollTo({top:0,behavior:"smooth"});
+    });
+    const remove = document.createElement("button");
+    remove.type = "button"; remove.className = "note-delete"; remove.textContent = "Delete";
+    remove.addEventListener("click", () => {
+      offlineNotes = offlineNotes.filter((item) => item.id !== note.id);
+      if (editingNoteId === note.id) resetNoteForm();
+      if (persistOfflineNotes()) renderOfflineNotes();
+    });
+    actions.append(edit, remove);
+    card.append(title, body, date, actions);
+    notesList.appendChild(card);
+  });
+}
+function resetNoteForm() {
+  editingNoteId = null;
+  noteForm.reset();
+  document.getElementById("saveNote").textContent = "Save note";
+}
+function openNotes() {
+  readOfflineNotes();
+  notesOverlay.hidden = false;
+  document.body.classList.add("notes-open");
+  sidebar.classList.remove("open");
+  window.setTimeout(() => noteTitle.focus(), 30);
+}
+function hideNotes() {
+  notesOverlay.hidden = true;
+  document.body.classList.remove("notes-open");
+  resetNoteForm();
+  notesLink.classList.remove("active");
+  notesLink.focus();
+}
+notesLink.addEventListener("click", () => {
+  notesLink.classList.add("active");
+  homeLink.classList.remove("active");
+  openNotes();
+});
+closeNotes.addEventListener("click", hideNotes);
+notesOverlay.addEventListener("click", (event) => { if (event.target === notesOverlay) hideNotes(); });
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !notesOverlay.hidden) hideNotes();
+});
+noteForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const title = noteTitle.value.trim();
+  const body = noteBody.value.trim();
+  if (!title) { noteTitle.focus(); return; }
+  if (!body) { noteBody.focus(); showToast("Add a few words to your note before saving."); return; }
+  const now = Date.now();
+  if (editingNoteId) {
+    offlineNotes = offlineNotes.map((note) => note.id === editingNoteId ? {...note,title,body,updatedAt:now} : note);
+  } else {
+    offlineNotes.push({id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(now) + Math.random().toString(16).slice(2),title,body,createdAt:now,updatedAt:now});
+  }
+  if (persistOfflineNotes()) {
+    renderOfflineNotes();
+    resetNoteForm();
+    showToast("Note saved on this device.");
+  }
+});
+readOfflineNotes();
+
 loadModels();
