@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101116">
+  <meta name="description" content="Zeno is a thoughtful AI companion for questions, ideas, writing, and code.">
+  <title>Zeno — Think beyond</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Zeno home">
+        <span class="brand-mark">z</span><span>Zeno</span>
+      </a>
+      <button class="new-chat" id="newChat"><span class="plus">＋</span> New chat</button>
+      <div class="side-label">YOUR SPACE</div>
+      <button class="side-link active" id="homeLink"><span>⌂</span> Explore</button>
+      <button class="side-link" id="historyLink"><span>◷</span> Recent chats</button>
+      <div class="sidebar-bottom">
+        <div class="status-dot"></div>
+        <div><strong>Zeno Preview</strong><small>Early build · More coming</small></div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menuButton" aria-label="Toggle menu">☰</button>
+        <div class="model-label"><span class="tiny-spark">✳</span> Zeno <span class="preview-tag">PREVIEW</span></div>
+        <button class="icon-button" id="themeToggle" aria-label="Toggle colour theme" title="Toggle theme">☼</button>
+      </header>
+
+      <section class="conversation" id="conversation" aria-live="polite">
+        <div class="welcome" id="welcome">
+          <div class="welcome-orb"><span>z</span><i></i></div>
+          <p class="eyebrow">A LITTLE CURIOSITY GOES A LONG WAY</p>
+          <h1>What’s on your <span>mind?</span></h1>
+          <p class="welcome-copy">A place to explore ideas, untangle problems, and make something new.</p>
+          <div class="suggestions">
+            <button class="suggestion" data-prompt="Help me brainstorm a creative project"><span class="suggestion-icon violet">✳</span><span><strong>Brainstorm ideas</strong><small>Turn a spark into a plan</small></span><b>↗</b></button>
+            <button class="suggestion" data-prompt="Explain how artificial intelligence works in simple terms"><span class="suggestion-icon blue">⌘</span><span><strong>Understand something</strong><small>Make complex things clearer</small></span><b>↗</b></button>
+            <button class="suggestion" data-prompt="Help me build a simple website"><span class="suggestion-icon green">&lt;/&gt;</span><span><strong>Build something</strong><small>Start a project from scratch</small></span><b>↗</b></button>
+            <button class="suggestion" data-prompt="Give me a fresh perspective on a problem"><span class="suggestion-icon amber">◈</span><span><strong>Find a new angle</strong><small>Look at it differently</small></span><b>↗</b></button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="composer-area">
+        <form class="composer" id="chatForm">
+          <textarea id="messageInput" rows="1" placeholder="Ask Zeno anything..." aria-label="Message Zeno"></textarea>
+          <div class="composer-tools">
+            <span class="composer-hint"><span>✳</span> Stay curious</span>
+            <button class="send-button" id="sendButton" type="submit" aria-label="Send message">↑</button>
+          </div>
+        </form>
+        <p class="disclaimer">Zeno is an early prototype. AI responses will be connected in a later step.</p>
+      </footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
