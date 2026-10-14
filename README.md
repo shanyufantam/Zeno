@@ -2,38 +2,65 @@
 
 **Think beyond the obvious.**
 
-Zeno is an early-stage general-purpose AI assistant project. The goal is a thoughtful, polished place to explore ideas, ask questions, create, write, and code.
+Zeno is an early-stage, general-purpose AI assistant. Its goal is to provide a friendly place to explore ideas, ask questions, work with supported files, write, and code.
 
-## Current build
+## Current features
 
-This repository currently contains the front-end prototype, made with plain HTML, CSS, and JavaScript:
-- Responsive chat layout with a fixed composer
-- Prompt suggestion cards and new-conversation action
-- Dark/light theme toggle
-- Honest prototype notice (no fake AI replies)
-- Mobile navigation and early recent-chat UI
+- Responsive chat interface with dark/light themes
+- AI provider/model picker populated from the configured provider credentials
+- OpenAI and Google Gemini server-side integrations
+- Attach supported images, PDFs, and text/code files
+- Short conversation context while the page remains open
+- API keys stay on the server and are never sent to browser JavaScript
 
-**The AI model is not connected yet.** The website should not be mistaken for a functioning AI assistant until the secure model connection is implemented.
+## Run Zeno locally
 
-## Run locally
+You need Node.js 18.17 or newer.
 
-1. Download or clone this repository.
-2. Open `index.html` in a modern browser.
+1. Download and extract this repository, or clone it.
+2. Open a terminal in the Zeno folder.
+3. Copy `.env.example` to a new file named `.env`.
+4. Open `.env` in a text editor and add the provider API key(s) you already have:
+   - `OPENAI_API_KEY=` for OpenAI
+   - `GEMINI_API_KEY=` for Google Gemini
+5. Save `.env`, then run:
 
-No build tooling is required for the current front-end.
+   ```sh
+   npm start
+   ```
+
+6. Open **http://127.0.0.1:3000** in your browser.
+
+The model menu reads each configured provider's available models from its API. If only one provider key is present, only that provider's models appear. If both keys are configured, both sets appear. If no key is configured, Zeno explains the setup needed.
+
+Do not open `index.html` directly for AI chat: the model selector and chat API require the local Node server.
+
+## Supported attachments
+
+- Images: PNG, JPEG, WebP, or GIF (up to 4 MB each)
+- PDF files (up to 4 MB each)
+- Text and code: TXT, Markdown, CSV, JSON, JavaScript, TypeScript, Python, HTML, CSS, XML, YAML, and LOG (up to 200 KB each)
+- Up to five attachments per message
+
+File support depends on the selected provider/model and its API capabilities. Avoid attaching private or sensitive material.
+
+## Security and costs
+
+- **Never commit `.env` or put API keys in `index.html`, `script.js`, or any public file.** The repository includes `.gitignore` rules for this.
+- Never paste an API key into a chat or send it to anyone.
+- Provider API usage can have limits or costs. Check your provider's terms and usage dashboard, and get a parent/guardian's help before enabling billing.
+- The server binds to `127.0.0.1` by default so it's intended for local development. **Do not put this API-key-enabled server on a public host until authentication, request limits, and usage controls have been added.** A public repository is not a private service.
+- Zeno does not save conversations to a database yet; current conversation context is kept in page memory.
 
 ## Roadmap
 
-- [x] Build the first responsive interface
-- [x] Improve layout, theme, and messaging preview
-- [ ] Connect a language model through a secure backend
-- [ ] Add real conversation history
-- [ ] Add optional document and coding tools
-- [ ] Test accessibility and mobile layouts
-
-## Security
-
-Never put API keys, access tokens, or passwords in this public repository or browser JavaScript. The model connection must keep provider credentials on a backend/serverless function.
+- [x] Create the interface
+- [x] Add provider-aware model selection
+- [x] Add supported file attachments
+- [x] Add server-side provider requests
+- [ ] Add persistent chat history
+- [ ] Add safe sign-in and controls before any public deployment
+- [ ] Improve errors, accessibility, and automated testing
 
 ## License
 
