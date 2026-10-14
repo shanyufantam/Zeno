@@ -1,15 +1,22 @@
 const form = document.getElementById("chatForm");
 const input = document.getElementById("messageInput");
 const conversation = document.getElementById("conversation");
-const welcome = document.getElementById("welcome");
 const newChat = document.getElementById("newChat");
 const themeToggle = document.getElementById("themeToggle");
 const sidebar = document.getElementById("sidebar");
 const menuButton = document.getElementById("menuButton");
+const pageTitle = document.getElementById("pageTitle");
+const recentList = document.getElementById("recentList");
+const homeLink = document.getElementById("homeLink");
+const historyLink = document.getElementById("historyLink");
+const previewExplanation = document.getElementById("previewExplanation");
+
+let firstMessageInChat = true;
+let chatTitles = [];
 
 function resizeInput() {
   input.style.height = "auto";
-  input.style.height = Math.min(input.scrollHeight, 150) + "px";
+  input.style.height = Math.min(input.scrollHeight, 135) + "px";
 }
 input.addEventListener("input", resizeInput);
 input.addEventListener("keydown", (event) => {
@@ -17,6 +24,13 @@ input.addEventListener("keydown", (event) => {
     event.preventDefault();
     form.requestSubmit();
   }
+});
+document.addEventListener("keydown", (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    startNewChat();
+  }
+  if (event.key === "Escape") sidebar.classList.remove("open");
 });
 
 function addMessage(text, who) {
@@ -35,30 +49,79 @@ function addMessage(text, who) {
   body.textContent = text;
   content.append(author, body);
   row.append(avatar, content);
-  conversation.appendChild(row);
+  conversation.insertBefore(row, previewExplanation);
   return row;
 }
 
-function showPrototypeReply(row) {
-  const content = row.querySelector(".message-content");
-  const note = document.createElement("div");
-  note.className = "prototype-note";
-  note.textContent = "Zeno's interface is working! Its AI model isn't connected yet. In the next step, we'll connect a model so Zeno can generate real answers. For now, your message stays in this browser session.";
-  content.appendChild(note);
+function showToast(message) {
+  const oldToast = document.querySelector(".toast");
+  if (oldToast) oldToast.remove();
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.setAttribute("role", "status");
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  window.setTimeout(() => toast.remove(), 3600);
 }
+
+function renderRecents() {
+  recentList.innerHTML = "";
+  if (!chatTitles.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty-recents";
+    empty.innerHTML = "Your conversations<br>will show up here.";
+    recentList.appendChild(empty);
+    return;
+  }
+  chatTitles.slice(0, 6).forEach((title) => {
+    const item = document.createElement("button");
+    item.className = "recent-item";
+    item.textContent = title;
+    item.title = title;
+    item.addEventListener("click", () => showToast("Chat history is a visual preview for now. Saving and reopening conversations comes in a later build."));
+    recentList.appendChild(item);
+  });
+}
+
+function startNewChat() {
+  conversation.querySelectorAll(".chat-message").forEach((node) => node.remove());
+  const welcome = document.getElementById("welcome");
+  if (welcome) welcome.hidden = false;
+  previewExplanation.hidden = true;
+  firstMessageInChat = true;
+  input.value = "";
+  resizeInput();
+  pageTitle.textContent = "New conversation";
+  sidebar.classList.remove("open");
+  input.focus();
+  conversation.scrollTop = 0;
+}
+newChat.addEventListener("click", startNewChat);
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const text = input.value.trim();
   if (!text) return;
-  if (welcome && welcome.isConnected) welcome.remove();
+
+  const welcome = document.getElementById("welcome");
+  if (welcome) welcome.hidden = true;
+
   addMessage(text, "user");
-  const reply = addMessage("I'm here. Let's turn this into something useful.", "assistant");
-  showPrototypeReply(reply);
+  if (firstMessageInChat) {
+    previewExplanation.hidden = false;
+    firstMessageInChat = false;
+    pageTitle.textContent = text.length > 28 ? text.slice(0, 28).trimEnd() + "…" : text;
+    chatTitles.unshift(pageTitle.textContent);
+    chatTitles = [...new Set(chatTitles)];
+    renderRecents();
+  } else {
+    showToast("Zeno's AI engine isn't connected yet. We'll connect a real model next—no fake answers.");
+  }
+
   input.value = "";
   resizeInput();
-  input.focus();
   conversation.scrollTop = conversation.scrollHeight;
+  input.focus();
 });
 
 document.querySelectorAll(".suggestion").forEach((button) => {
@@ -69,38 +132,26 @@ document.querySelectorAll(".suggestion").forEach((button) => {
   });
 });
 
-newChat.addEventListener("click", () => {
-  conversation.innerHTML = "";
-  const panel = document.createElement("div");
-  panel.className = "welcome";
-  panel.id = "welcome";
-  panel.innerHTML = '<div class="welcome-orb"><span>z</span><i></i></div><p class="eyebrow">A LITTLE CURIOSITY GOES A LONG WAY</p><h1>What’s on your <span>mind?</span></h1><p class="welcome-copy">A place to explore ideas, untangle problems, and make something new.</p><div class="suggestions"><button class="suggestion" data-prompt="Help me brainstorm a creative project"><span class="suggestion-icon violet">✳</span><span><strong>Brainstorm ideas</strong><small>Turn a spark into a plan</small></span><b>↗</b></button><button class="suggestion" data-prompt="Explain how artificial intelligence works in simple terms"><span class="suggestion-icon blue">⌘</span><span><strong>Understand something</strong><small>Make complex things clearer</small></span><b>↗</b></button><button class="suggestion" data-prompt="Help me build a simple website"><span class="suggestion-icon green">&lt;/&gt;</span><span><strong>Build something</strong><small>Start a project from scratch</small></span><b>↗</b></button><button class="suggestion" data-prompt="Give me a fresh perspective on a problem"><span class="suggestion-icon amber">◈</span><span><strong>Find a new angle</strong><small>Look at it differently</small></span><b>↗</b></button></div>';
-  conversation.appendChild(panel);
-  panel.querySelectorAll(".suggestion").forEach((button) => button.addEventListener("click", () => {
-    input.value = button.dataset.prompt || "";
-    resizeInput();
-    input.focus();
-  }));
-  sidebar.classList.remove("open");
-  input.value = "";
-  input.focus();
-});
-
 themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-  themeToggle.textContent = document.body.classList.contains("light-mode") ? "☾" : "☼";
+  const isLight = document.body.classList.toggle("light-mode");
+  themeToggle.textContent = isLight ? "☾" : "☼";
+  themeToggle.setAttribute("aria-label", isLight ? "Switch to dark theme" : "Switch to light theme");
 });
 
 menuButton.addEventListener("click", () => sidebar.classList.toggle("open"));
-document.getElementById("homeLink").addEventListener("click", () => {
+homeLink.addEventListener("click", () => {
+  startNewChat();
+  homeLink.classList.add("active");
   sidebar.classList.remove("open");
 });
-document.getElementById("historyLink").addEventListener("click", () => {
-  alert("Chat history will be added in a future version of Zeno.");
+historyLink.addEventListener("click", () => {
+  showToast(chatTitles.length ? "Choose a title under YOUR CHATS to preview your recent conversations." : "Your recent conversations will appear here once you start chatting.");
+  sidebar.classList.remove("open");
 });
 document.addEventListener("click", (event) => {
-  if (window.innerWidth <= 700 && sidebar.classList.contains("open") &&
+  if (window.innerWidth <= 660 && sidebar.classList.contains("open") &&
       !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
     sidebar.classList.remove("open");
   }
 });
+renderRecents();
