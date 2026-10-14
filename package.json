@@ -1,0 +1,13 @@
+{
+  "name": "zeno-ai",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Zeno — a general-purpose AI assistant prototype",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}
