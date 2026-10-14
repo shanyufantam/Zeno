@@ -31,6 +31,8 @@ Do not open `index.html` directly; AI chat requires the local server.
 
 ## Current features
 
+- Offline notes with create, edit, and delete; saved locally on this device without an API key
+
 - Responsive chat interface with dark/light themes
 - Model selection for configured OpenAI and Google Gemini credentials
 - Server-side AI requests; keys are not sent to browser JavaScript
@@ -52,6 +54,7 @@ Do not open `index.html` directly; AI chat requires the local server.
 - [ ] Add easy in-app personal API-key settings
 - [ ] Build and test a Windows installer
 - [ ] Add a hosted cloud backend with authentication and usage limits
+- [x] Add local offline notes (notes are stored in the app profile, not synced)
 - [ ] Add persistent chat history and automated tests
 
 ## License
