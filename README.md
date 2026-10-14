@@ -2,65 +2,57 @@
 
 **Think beyond the obvious.**
 
-Zeno is an early-stage, general-purpose AI assistant. Its goal is to provide a friendly place to explore ideas, ask questions, work with supported files, write, and code.
+Zeno is an early-stage, general-purpose AI assistant for asking questions, exploring ideas, working with supported files, writing, and coding.
+
+## Windows desktop app
+
+The goal is to let everyday users install Zeno without separately installing Node.js. Building an installer is a developer step, and the installer has **not yet been built or tested**.
+
+On a Windows development computer:
+
+1. Install Node.js 22 or newer (LTS recommended).
+2. Download and extract this repository.
+3. Open a terminal in the Zeno folder.
+4. Run `npm install`.
+5. Run `npm run desktop` to launch the desktop app during development.
+6. Run `npm run dist:win` to create a Windows installer in the `dist` folder.
+
+**Current limitation:** easy in-app API-key settings and a hosted Zeno cloud service are not implemented yet. AI chat still needs an OpenAI or Google Gemini API key configured for the server. Do not share this as a finished public release yet.
+
+## Run the web version locally
+
+1. Install Node.js 22 or newer.
+2. Copy `.env.example` to a new file named `.env`.
+3. Add your provider key: `OPENAI_API_KEY=` or `GEMINI_API_KEY=`.
+4. Run `npm start` in the Zeno folder.
+5. Open http://127.0.0.1:3000 in your browser.
+
+Do not open `index.html` directly; AI chat requires the local server.
 
 ## Current features
 
 - Responsive chat interface with dark/light themes
-- AI provider/model picker populated from the configured provider credentials
-- OpenAI and Google Gemini server-side integrations
-- Attach supported images, PDFs, and text/code files
+- Model selection for configured OpenAI and Google Gemini credentials
+- Server-side AI requests; keys are not sent to browser JavaScript
+- Supported image, PDF, text, and code attachments
 - Short conversation context while the page remains open
-- API keys stay on the server and are never sent to browser JavaScript
-
-## Run Zeno locally
-
-You need Node.js 22 or newer. Use a currently supported LTS release.
-
-1. Download and extract this repository, or clone it.
-2. Open a terminal in the Zeno folder.
-3. Copy `.env.example` to a new file named `.env`.
-4. Open `.env` in a text editor and add the provider API key(s) you already have:
-   - `OPENAI_API_KEY=` for OpenAI
-   - `GEMINI_API_KEY=` for Google Gemini
-5. Save `.env`, then run:
-
-   ```sh
-   npm start
-   ```
-
-6. Open **http://127.0.0.1:3000** in your browser.
-
-The model menu reads each configured provider's available models from its API. If only one provider key is present, only that provider's models appear. If both keys are configured, both sets appear. If no key is configured, Zeno explains the setup needed.
-
-Do not open `index.html` directly for AI chat: the model selector and chat API require the local Node server.
-
-## Supported attachments
-
-- Images: PNG, JPEG, WebP, or GIF (up to 4 MB each)
-- PDF files (up to 4 MB each)
-- Text and code: TXT, Markdown, CSV, JSON, JavaScript, TypeScript, Python, HTML, CSS, XML, YAML, and LOG (up to 200 KB each)
-- Up to five attachments per message, with a combined upload limit of 7 MB
-
-File support depends on the selected provider/model and its API capabilities. Avoid attaching private or sensitive material.
 
 ## Security and costs
 
-- **Never commit `.env` or put API keys in `index.html`, `script.js`, or any public file.** The repository includes `.gitignore` rules for this.
+- Never commit `.env` or put API keys in browser files.
 - Never paste an API key into a chat or send it to anyone.
-- Provider API usage can have limits or costs. Check your provider's terms and usage dashboard, and get a parent/guardian's help before enabling billing.
-- The server binds to `127.0.0.1` by default so it's intended for local development. **Do not put this API-key-enabled server on a public host until authentication, request limits, and usage controls have been added.** A public repository is not a private service.
-- Zeno does not save conversations to a database yet; current conversation context is kept in page memory.
+- Provider API usage may have limits or costs. Check provider terms and usage, and ask a parent/guardian for help before enabling billing.
+- The server binds to `127.0.0.1` by default. Do not deploy it publicly until authentication, request limits, and usage controls are added.
+- Chat history is not saved to a database yet.
 
 ## Roadmap
 
-- [x] Create the interface
-- [x] Add provider-aware model selection
-- [x] Add supported file attachments
-- [x] Add server-side provider requests
-- [ ] Add persistent chat history
-- [ ] Add safe sign-in and controls before any public deployment
-- [ ] Improve errors, accessibility, and automated testing
+- [x] Create the interface and server-side provider requests
+- [x] Add an initial Electron desktop shell and Windows installer configuration
+- [ ] Add easy in-app personal API-key settings
+- [ ] Build and test a Windows installer
+- [ ] Add a hosted cloud backend with authentication and usage limits
+- [ ] Add persistent chat history and automated tests
 
 ## License
 
