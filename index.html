@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101116">
-  <meta name="description" content="Zeno is a thoughtful AI companion for questions, ideas, writing, and code.">
+  <meta name="theme-color" content="#101019">
+  <meta name="description" content="Zeno — a thoughtful AI companion for ideas, questions, writing, and code.">
   <title>Zeno — Think beyond</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,49 +15,82 @@
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#" aria-label="Zeno home">
-        <span class="brand-mark">z</span><span>Zeno</span>
+        <span class="brand-mark"><span>z</span></span>
+        <span class="brand-name">zeno<span class="brand-period">.</span></span>
       </a>
-      <button class="new-chat" id="newChat"><span class="plus">＋</span> New chat</button>
-      <div class="side-label">YOUR SPACE</div>
-      <button class="side-link active" id="homeLink"><span>⌂</span> Explore</button>
-      <button class="side-link" id="historyLink"><span>◷</span> Recent chats</button>
+
+      <button class="new-chat" id="newChat"><span class="plus">+</span><span>New conversation</span><kbd>⌘ K</kbd></button>
+
+      <p class="side-label">WORKSPACE</p>
+      <button class="side-link active" id="homeLink"><span class="nav-icon">◫</span> Discover</button>
+      <button class="side-link" id="historyLink"><span class="nav-icon">◷</span> Recent chats</button>
+
+      <div class="sidebar-divider"></div>
+      <p class="side-label">YOUR CHATS</p>
+      <div class="recent-list" id="recentList">
+        <div class="empty-recents">Your conversations<br>will show up here.</div>
+      </div>
+
       <div class="sidebar-bottom">
-        <div class="status-dot"></div>
-        <div><strong>Zeno Preview</strong><small>Early build · More coming</small></div>
+        <div class="profile-avatar">Z</div>
+        <div class="profile-info"><strong>Guest space</strong><small>Early access preview</small></div>
+        <span class="online-dot" aria-label="Preview active"></span>
       </div>
     </aside>
 
     <main class="main-panel">
       <header class="topbar">
-        <button class="icon-button mobile-menu" id="menuButton" aria-label="Toggle menu">☰</button>
-        <div class="model-label"><span class="tiny-spark">✳</span> Zeno <span class="preview-tag">PREVIEW</span></div>
-        <button class="icon-button" id="themeToggle" aria-label="Toggle colour theme" title="Toggle theme">☼</button>
+        <div class="topbar-left">
+          <button class="icon-button mobile-menu" id="menuButton" aria-label="Toggle menu">☰</button>
+          <div class="page-crumb"><span class="crumb-muted">Workspace</span><span class="crumb-slash">/</span><strong id="pageTitle">New conversation</strong></div>
+        </div>
+        <div class="topbar-actions">
+          <span class="preview-status"><span class="status-pulse"></span> UI preview</span>
+          <button class="icon-button" id="themeToggle" aria-label="Toggle colour theme" title="Toggle theme">☼</button>
+        </div>
       </header>
 
       <section class="conversation" id="conversation" aria-live="polite">
         <div class="welcome" id="welcome">
-          <div class="welcome-orb"><span>z</span><i></i></div>
-          <p class="eyebrow">A LITTLE CURIOSITY GOES A LONG WAY</p>
-          <h1>What’s on your <span>mind?</span></h1>
-          <p class="welcome-copy">A place to explore ideas, untangle problems, and make something new.</p>
-          <div class="suggestions">
-            <button class="suggestion" data-prompt="Help me brainstorm a creative project"><span class="suggestion-icon violet">✳</span><span><strong>Brainstorm ideas</strong><small>Turn a spark into a plan</small></span><b>↗</b></button>
-            <button class="suggestion" data-prompt="Explain how artificial intelligence works in simple terms"><span class="suggestion-icon blue">⌘</span><span><strong>Understand something</strong><small>Make complex things clearer</small></span><b>↗</b></button>
-            <button class="suggestion" data-prompt="Help me build a simple website"><span class="suggestion-icon green">&lt;/&gt;</span><span><strong>Build something</strong><small>Start a project from scratch</small></span><b>↗</b></button>
-            <button class="suggestion" data-prompt="Give me a fresh perspective on a problem"><span class="suggestion-icon amber">◈</span><span><strong>Find a new angle</strong><small>Look at it differently</small></span><b>↗</b></button>
+          <div class="hero-symbol" aria-hidden="true">
+            <div class="hero-ring ring-one"></div><div class="hero-ring ring-two"></div>
+            <span class="hero-z">z</span><span class="hero-star">✳</span>
           </div>
+          <p class="eyebrow"><span></span> CURIOSITY, MEET CLARITY</p>
+          <h1>Think beyond<br><span>the obvious.</span></h1>
+          <p class="welcome-copy">A space for big questions, fresh ideas, and the things you’re curious about.</p>
+
+          <div class="suggestion-heading"><span>TRY ASKING</span><span class="suggestion-line"></span></div>
+          <div class="suggestions">
+            <button class="suggestion" data-prompt="Help me come up with a unique project idea">
+              <span class="suggestion-icon icon-violet">✳</span><span class="suggestion-copy"><strong>Think creatively</strong><small>Find an idea worth exploring</small></span><span class="suggestion-arrow">↗</span>
+            </button>
+            <button class="suggestion" data-prompt="Explain how artificial intelligence works using a simple example">
+              <span class="suggestion-icon icon-blue">⌘</span><span class="suggestion-copy"><strong>Make it make sense</strong><small>Untangle a tricky concept</small></span><span class="suggestion-arrow">↗</span>
+            </button>
+            <button class="suggestion" data-prompt="Help me design and build a modern website">
+              <span class="suggestion-icon icon-green">&lt;/&gt;</span><span class="suggestion-copy"><strong>Build something</strong><small>Turn a thought into a project</small></span><span class="suggestion-arrow">↗</span>
+            </button>
+            <button class="suggestion" data-prompt="Give me a different perspective on a problem I'm solving">
+              <span class="suggestion-icon icon-amber">◈</span><span class="suggestion-copy"><strong>See another angle</strong><small>Look at a problem differently</small></span><span class="suggestion-arrow">↗</span>
+            </button>
+          </div>
+        </div>
+        <div class="preview-explanation" id="previewExplanation" hidden>
+          <span class="explain-icon">✳</span>
+          <div><strong>The interface is ready. The AI brain comes next.</strong><p>Zeno is currently a front-end prototype, so it won’t invent answers or pretend to be an AI. Our next build step is connecting a real language model securely.</p></div>
         </div>
       </section>
 
       <footer class="composer-area">
         <form class="composer" id="chatForm">
-          <textarea id="messageInput" rows="1" placeholder="Ask Zeno anything..." aria-label="Message Zeno"></textarea>
-          <div class="composer-tools">
-            <span class="composer-hint"><span>✳</span> Stay curious</span>
-            <button class="send-button" id="sendButton" type="submit" aria-label="Send message">↑</button>
+          <textarea id="messageInput" rows="1" placeholder="Message Zeno..." aria-label="Message Zeno"></textarea>
+          <div class="composer-bottom">
+            <span class="composer-hint"><span class="hint-spark">✳</span> Stay curious <span class="hint-divider">·</span> <span class="honest-label">Preview mode</span></span>
+            <button class="send-button" id="sendButton" type="submit" aria-label="Send message" title="Send message">↑</button>
           </div>
         </form>
-        <p class="disclaimer">Zeno is an early prototype. AI responses will be connected in a later step.</p>
+        <p class="disclaimer">Zeno is still being built. The AI model is not connected yet.</p>
       </footer>
     </main>
   </div>
