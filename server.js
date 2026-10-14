@@ -148,7 +148,13 @@ async function listModels() {
   return { serverReady: true, providers, warnings };
 }
 
-function badInput(message) {\n  const error = new Error(message);\n  error.status = 400;\n  return error;\n}\n\nfunction validateAttachments(value) {
+function badInput(message) {
+  const error = new Error(message);
+  error.status = 400;
+  return error;
+}
+
+function validateAttachments(value) {
   if (value === undefined) return [];
   if (!Array.isArray(value) || value.length > 5) throw badInput("Attach up to five supported files per message.");
   const attachments = [];
