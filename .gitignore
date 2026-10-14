@@ -3,8 +3,11 @@
 .env.*
 !.env.example
 
-# Node.js
+# Node.js and Electron build output
 node_modules/
+dist/
+release/
+out/
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
