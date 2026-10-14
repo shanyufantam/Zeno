@@ -1,34 +1,39 @@
 # Zeno
 
-**Think beyond.**
+**Think beyond the obvious.**
 
-Zeno is an early-stage, general-purpose AI assistant project. The goal is to build a polished place to ask questions, explore ideas, write, code, and create.
+Zeno is an early-stage general-purpose AI assistant project. The goal is a thoughtful, polished place to explore ideas, ask questions, create, write, and code.
 
-## Current status
+## Current build
 
-The first version is a static front-end prototype built with HTML, CSS, and vanilla JavaScript. It includes a responsive chat layout, prompt suggestions, a light/dark theme toggle, and a new-chat action.
+This repository currently contains the front-end prototype, made with plain HTML, CSS, and JavaScript:
+- Responsive chat layout with a fixed composer
+- Prompt suggestion cards and new-conversation action
+- Dark/light theme toggle
+- Honest prototype notice (no fake AI replies)
+- Mobile navigation and early recent-chat UI
 
-**Important:** An AI model is not connected yet. The current response is a placeholder, not a real AI answer.
+**The AI model is not connected yet.** The website should not be mistaken for a functioning AI assistant until the secure model connection is implemented.
 
 ## Run locally
 
 1. Download or clone this repository.
-2. Open `index.html` in a browser.
+2. Open `index.html` in a modern browser.
 
-No build tools are required for the current prototype.
+No build tooling is required for the current front-end.
 
 ## Roadmap
 
-- [x] Create the first responsive interface
-- [x] Add theme toggle and basic chat interactions
-- [ ] Connect an AI model through a secure backend
-- [ ] Add chat history
-- [ ] Add optional coding and document tools
-- [ ] Test accessibility, performance, and mobile layouts
+- [x] Build the first responsive interface
+- [x] Improve layout, theme, and messaging preview
+- [ ] Connect a language model through a secure backend
+- [ ] Add real conversation history
+- [ ] Add optional document and coding tools
+- [ ] Test accessibility and mobile layouts
 
 ## Security
 
-Never commit API keys, passwords, access tokens, or other secrets to this public repository. When an AI provider is added, requests should go through a backend that keeps credentials private.
+Never put API keys, access tokens, or passwords in this public repository or browser JavaScript. The model connection must keep provider credentials on a backend/serverless function.
 
 ## License
 
