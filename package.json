@@ -1,13 +1,50 @@
 {
   "name": "zeno-ai",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "Zeno — a general-purpose AI assistant prototype",
+  "description": "Zeno — a general-purpose AI assistant",
+  "main": "main.cjs",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "desktop": "electron .",
+    "dist:win": "electron-builder --win nsis"
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.zeno.assistant",
+    "productName": "Zeno",
+    "asar": true,
+    "files": [
+      "main.cjs",
+      "server.js",
+      "index.html",
+      "style.css",
+      "script.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }
