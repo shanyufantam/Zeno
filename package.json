@@ -8,7 +8,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "desktop": "electron .",
-    "dist:win": "electron-builder --win nsis"
+    "dist:win": "electron-builder --win nsis --publish never"
   },
   "engines": {
     "node": ">=22.0.0"
