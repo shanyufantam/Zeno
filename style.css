@@ -79,3 +79,44 @@ button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid va
 }
 @media(max-height:760px) and (min-width:661px){.welcome{padding-top:8px}.hero-symbol{width:57px;height:57px;margin-bottom:15px}.hero-z{font-size:40px}.welcome-copy{margin:10px auto 21px}.suggestion{min-height:66px}.welcome h1{font-size:40px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+
+/* Model selection and attachments */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.composer-attachment-row{display:flex;align-items:center;gap:9px;min-width:0;margin:0 0 10px;flex-wrap:wrap}
+.attach-button{height:29px;display:inline-flex;align-items:center;gap:6px;padding:0 10px;border:1px solid #3b374d;border-radius:9px;background:#22202e;color:#c7bddf;font-size:10px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.attach-button span{font-size:16px;line-height:1;color:#cfbdff}.attach-button:hover{background:#302b40;border-color:#70608f}
+.attachment-list{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.attachment-list:empty{display:none}
+.attachment-chip{max-width:190px;display:inline-flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid #40394f;border-radius:8px;background:#242130;color:#c7c1d8;font-size:10px}
+.attachment-chip-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:145px}
+.attachment-remove{width:17px;height:17px;display:grid;place-items:center;flex:0 0 17px;border:0;border-radius:5px;background:transparent;color:#9c96ad;font-size:14px;line-height:1;padding:0}
+.attachment-remove:hover{background:#483446;color:#ffd5df}
+.composer-left{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:wrap}
+.model-picker-wrap{max-width:min(290px,60vw);display:flex;align-items:center;gap:6px;min-width:0;border:1px solid #39344b;background:#211f2c;border-radius:9px;padding:0 7px;height:31px}
+.model-spark{color:#ccb8ff;font-size:13px;flex:0 0 auto}
+.model-picker-wrap select{min-width:0;max-width:240px;border:0;outline:none;background:transparent;color:#ddd7ed;font-size:10px;font-weight:600;padding:0 2px;cursor:pointer}
+.model-picker-wrap select:disabled{cursor:not-allowed;color:#8b859b}
+.model-picker-wrap select option,.model-picker-wrap select optgroup{background:#211f2c;color:#eee9f7}
+.model-status{max-width:260px;font-size:9px;color:#888398;line-height:1.4}
+.model-status.status-good{color:#81c9a6}.model-status.status-warning{color:#cfb477}.model-status.status-error{color:#e3a1b2}
+.composer-bottom{gap:10px}.send-button:disabled{opacity:.48;cursor:wait;transform:none}
+.chat-message .message-text a{color:#c9b5ff}.chat-message.assistant .message-text{overflow-wrap:anywhere}
+.message-attachments{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.message-attachment{display:inline-flex;align-items:center;gap:6px;border:1px solid #383348;background:#1e1c29;border-radius:8px;padding:6px 8px;color:#b7adc9;font-size:10px}
+.thinking-dots{display:inline-flex;gap:4px;align-items:center;height:14px}
+.thinking-dots span{width:5px;height:5px;border-radius:50%;background:#bba7ef;animation:dotPulse 1s infinite ease-in-out}
+.thinking-dots span:nth-child(2){animation-delay:.15s}.thinking-dots span:nth-child(3){animation-delay:.3s}
+@keyframes dotPulse{0%,65%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.toast{max-width:min(520px,calc(100vw - 30px));white-space:normal}
+.light-mode .attach-button{background:#f0ecf9;border-color:#ded5ef;color:#625475}
+.light-mode .model-picker-wrap{background:#f5f2fb;border-color:#e0d9ed}
+.light-mode .model-picker-wrap select,.light-mode .model-picker-wrap select option,.light-mode .model-picker-wrap select optgroup{color:#362d48;background:#f5f2fb}
+.light-mode .attachment-chip{background:#f3effa;border-color:#e0d8ed;color:#5a506c}
+.light-mode .attachment-remove{color:#716781}
+.light-mode .message-attachment{background:#f3effa;border-color:#e0d8ed;color:#5a506c}
+@media(max-width:660px){
+  .composer-attachment-row{gap:7px}.attachment-chip{max-width:150px}.attachment-chip-name{max-width:103px}
+  .composer-left{gap:6px}.model-picker-wrap{max-width:57vw}.model-picker-wrap select{max-width:calc(57vw - 45px);font-size:9px}
+  .model-status{flex-basis:100%;padding-left:2px;font-size:8px}.composer-bottom{align-items:flex-end}
+}
