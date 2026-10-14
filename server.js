@@ -4,10 +4,9 @@ const path = require("node:path");
 
 const ROOT = __dirname;
 const MAX_BODY_BYTES = 11 * 1024 * 1024;
+loadEnvFile();
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "127.0.0.1";
-
-loadEnvFile();
 
 const STATIC_FILES = new Map([
   ["/", ["index.html", "text/html; charset=utf-8"]],
