@@ -15,7 +15,7 @@ Zeno is an early-stage, general-purpose AI assistant. Its goal is to provide a f
 
 ## Run Zeno locally
 
-You need Node.js 18.17 or newer.
+You need Node.js 22 or newer. Use a currently supported LTS release.
 
 1. Download and extract this repository, or clone it.
 2. Open a terminal in the Zeno folder.
