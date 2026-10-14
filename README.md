@@ -40,7 +40,7 @@ Do not open `index.html` directly for AI chat: the model selector and chat API r
 - Images: PNG, JPEG, WebP, or GIF (up to 4 MB each)
 - PDF files (up to 4 MB each)
 - Text and code: TXT, Markdown, CSV, JSON, JavaScript, TypeScript, Python, HTML, CSS, XML, YAML, and LOG (up to 200 KB each)
-- Up to five attachments per message
+- Up to five attachments per message, with a combined upload limit of 7 MB
 
 File support depends on the selected provider/model and its API capabilities. Avoid attaching private or sensitive material.
 
