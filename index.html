@@ -14,27 +14,18 @@
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
-      <a class="brand" href="#" aria-label="Zeno home">
-        <span class="brand-mark"><span>z</span></span>
-        <span class="brand-name">zeno<span class="brand-period">.</span></span>
-      </a>
-
-      <button class="new-chat" id="newChat"><span class="plus">+</span><span>New conversation</span><kbd>⌘ K</kbd></button>
-
+      <a class="brand" href="#" aria-label="Zeno home"><span class="brand-mark"><span>z</span></span><span class="brand-name">zeno<span class="brand-period">.</span></span></a>
+      <button class="new-chat" id="newChat"><span class="plus">+</span><span>New conversation</span><kbd>Ctrl K</kbd></button>
       <p class="side-label">WORKSPACE</p>
       <button class="side-link active" id="homeLink"><span class="nav-icon">◫</span> Discover</button>
       <button class="side-link" id="historyLink"><span class="nav-icon">◷</span> Recent chats</button>
-
       <div class="sidebar-divider"></div>
       <p class="side-label">YOUR CHATS</p>
-      <div class="recent-list" id="recentList">
-        <div class="empty-recents">Your conversations<br>will show up here.</div>
-      </div>
-
+      <div class="recent-list" id="recentList"><div class="empty-recents">Your conversations<br>will show up here.</div></div>
       <div class="sidebar-bottom">
         <div class="profile-avatar">Z</div>
-        <div class="profile-info"><strong>Guest space</strong><small>Early access preview</small></div>
-        <span class="online-dot" aria-label="Preview active"></span>
+        <div class="profile-info"><strong>Guest space</strong><small id="connectionLabel">Checking connection…</small></div>
+        <span class="online-dot" id="connectionDot" title="Server status"></span>
       </div>
     </aside>
 
@@ -45,52 +36,48 @@
           <div class="page-crumb"><span class="crumb-muted">Workspace</span><span class="crumb-slash">/</span><strong id="pageTitle">New conversation</strong></div>
         </div>
         <div class="topbar-actions">
-          <span class="preview-status"><span class="status-pulse"></span> UI preview</span>
+          <span class="preview-status"><span class="status-pulse"></span><span id="topStatus">Connecting</span></span>
           <button class="icon-button" id="themeToggle" aria-label="Toggle colour theme" title="Toggle theme">☼</button>
         </div>
       </header>
 
       <section class="conversation" id="conversation" aria-live="polite">
         <div class="welcome" id="welcome">
-          <div class="hero-symbol" aria-hidden="true">
-            <div class="hero-ring ring-one"></div><div class="hero-ring ring-two"></div>
-            <span class="hero-z">z</span><span class="hero-star">✳</span>
-          </div>
+          <div class="hero-symbol" aria-hidden="true"><div class="hero-ring ring-one"></div><div class="hero-ring ring-two"></div><span class="hero-z">z</span><span class="hero-star">✳</span></div>
           <p class="eyebrow"><span></span> CURIOSITY, MEET CLARITY</p>
           <h1>Think beyond<br><span>the obvious.</span></h1>
           <p class="welcome-copy">A space for big questions, fresh ideas, and the things you’re curious about.</p>
-
           <div class="suggestion-heading"><span>TRY ASKING</span><span class="suggestion-line"></span></div>
           <div class="suggestions">
-            <button class="suggestion" data-prompt="Help me come up with a unique project idea">
-              <span class="suggestion-icon icon-violet">✳</span><span class="suggestion-copy"><strong>Think creatively</strong><small>Find an idea worth exploring</small></span><span class="suggestion-arrow">↗</span>
-            </button>
-            <button class="suggestion" data-prompt="Explain how artificial intelligence works using a simple example">
-              <span class="suggestion-icon icon-blue">⌘</span><span class="suggestion-copy"><strong>Make it make sense</strong><small>Untangle a tricky concept</small></span><span class="suggestion-arrow">↗</span>
-            </button>
-            <button class="suggestion" data-prompt="Help me design and build a modern website">
-              <span class="suggestion-icon icon-green">&lt;/&gt;</span><span class="suggestion-copy"><strong>Build something</strong><small>Turn a thought into a project</small></span><span class="suggestion-arrow">↗</span>
-            </button>
-            <button class="suggestion" data-prompt="Give me a different perspective on a problem I'm solving">
-              <span class="suggestion-icon icon-amber">◈</span><span class="suggestion-copy"><strong>See another angle</strong><small>Look at a problem differently</small></span><span class="suggestion-arrow">↗</span>
-            </button>
+            <button class="suggestion" data-prompt="Help me come up with a unique project idea"><span class="suggestion-icon icon-violet">✳</span><span class="suggestion-copy"><strong>Think creatively</strong><small>Find an idea worth exploring</small></span><span class="suggestion-arrow">↗</span></button>
+            <button class="suggestion" data-prompt="Explain how artificial intelligence works using a simple example"><span class="suggestion-icon icon-blue">⌘</span><span class="suggestion-copy"><strong>Make it make sense</strong><small>Untangle a tricky concept</small></span><span class="suggestion-arrow">↗</span></button>
+            <button class="suggestion" data-prompt="Help me design and build a modern website"><span class="suggestion-icon icon-green">&lt;/&gt;</span><span class="suggestion-copy"><strong>Build something</strong><small>Turn a thought into a project</small></span><span class="suggestion-arrow">↗</span></button>
+            <button class="suggestion" data-prompt="Give me a different perspective on a problem I'm solving"><span class="suggestion-icon icon-amber">◈</span><span class="suggestion-copy"><strong>See another angle</strong><small>Look at a problem differently</small></span><span class="suggestion-arrow">↗</span></button>
           </div>
-        </div>
-        <div class="preview-explanation" id="previewExplanation" hidden>
-          <span class="explain-icon">✳</span>
-          <div><strong>The interface is ready. The AI brain comes next.</strong><p>Zeno is currently a front-end prototype, so it won’t invent answers or pretend to be an AI. Our next build step is connecting a real language model securely.</p></div>
         </div>
       </section>
 
       <footer class="composer-area">
         <form class="composer" id="chatForm">
+          <input type="file" id="fileInput" hidden multiple accept="image/png,image/jpeg,image/webp,image/gif,application/pdf,.txt,.md,.csv,.json,.js,.ts,.py,.html,.css,.xml,.yaml,.yml,.log">
+          <div class="composer-attachment-row">
+            <label class="attach-button" for="fileInput" title="Attach an image, PDF, or text/code file"><span>＋</span> Attach files</label>
+            <div class="attachment-list" id="attachmentList" aria-live="polite"></div>
+          </div>
           <textarea id="messageInput" rows="1" placeholder="Message Zeno..." aria-label="Message Zeno"></textarea>
           <div class="composer-bottom">
-            <span class="composer-hint"><span class="hint-spark">✳</span> Stay curious <span class="hint-divider">·</span> <span class="honest-label">Preview mode</span></span>
+            <div class="composer-left">
+              <div class="model-picker-wrap">
+                <span class="model-spark">✳</span>
+                <label class="sr-only" for="modelSelect">AI provider and model</label>
+                <select id="modelSelect" aria-label="Choose an available AI model" disabled><option value="">Checking available models…</option></select>
+              </div>
+              <span class="model-status" id="modelStatus">Looking for configured providers…</span>
+            </div>
             <button class="send-button" id="sendButton" type="submit" aria-label="Send message" title="Send message">↑</button>
           </div>
         </form>
-        <p class="disclaimer">Zeno is still being built. The AI model is not connected yet.</p>
+        <p class="disclaimer" id="disclaimer">Model choices appear when a provider API key is configured on the Zeno server.</p>
       </footer>
     </main>
   </div>
