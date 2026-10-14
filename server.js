@@ -16,7 +16,7 @@ const STATIC_FILES = new Map([
 ]);
 
 function loadEnvFile() {
-  const file = path.join(ROOT, ".env");
+  const file = path.join(process.env.ZENO_CONFIG_DIR || ROOT, ".env");
   if (!fs.existsSync(file)) return;
   const lines = fs.readFileSync(file, "utf8").split(/\r?\n/);
   for (const rawLine of lines) {
@@ -369,8 +369,12 @@ const server = http.createServer(async (req, res) => {
   json(res, 404, { error: "Not found." });
 });
 
-server.listen(PORT, HOST, () => {
-  console.log("Zeno is running at http://" + HOST + ":" + PORT);
-  console.log("Configured providers: " + [openAIKey() ? "OpenAI" : "", geminiKey() ? "Google Gemini" : ""].filter(Boolean).join(", "));
-  console.log("API keys are read server-side and are never sent to the browser.");
-});
+if (require.main === module) {
+  server.listen(PORT, HOST, () => {
+    console.log("Zeno is running at http://" + HOST + ":" + PORT);
+    console.log("Configured providers: " + [openAIKey() ? "OpenAI" : "", geminiKey() ? "Google Gemini" : ""].filter(Boolean).join(", "));
+    console.log("API keys are read server-side and are never sent to the browser.");
+  });
+}
+
+module.exports = { server };
