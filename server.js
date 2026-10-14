@@ -148,32 +148,32 @@ async function listModels() {
   return { serverReady: true, providers, warnings };
 }
 
-function validateAttachments(value) {
+function badInput(message) {\n  const error = new Error(message);\n  error.status = 400;\n  return error;\n}\n\nfunction validateAttachments(value) {
   if (value === undefined) return [];
-  if (!Array.isArray(value) || value.length > 5) throw new Error("Attach up to five supported files per message.");
+  if (!Array.isArray(value) || value.length > 5) throw badInput("Attach up to five supported files per message.");
   const attachments = [];
   const allowedImages = new Set(["image/png", "image/jpeg", "image/webp", "image/gif"]);
   for (const item of value) {
     if (!item || typeof item.name !== "string" || typeof item.type !== "string") {
-      throw new Error("An attachment has invalid metadata.");
+      throw badInput("An attachment has invalid metadata.");
     }
     const name = path.basename(item.name).slice(0, 140);
     if (typeof item.content === "string") {
-      if (Buffer.byteLength(item.content, "utf8") > 200 * 1024) throw new Error("Text and code attachments must be 200 KB or smaller.");
+      if (Buffer.byteLength(item.content, "utf8") > 200 * 1024) throw badInput("Text and code attachments must be 200 KB or smaller.");
       attachments.push({ name, type: "text/plain", content: item.content });
       continue;
     }
-    if (typeof item.data !== "string") throw new Error("An attachment is missing its file data.");
+    if (typeof item.data !== "string") throw badInput("An attachment is missing its file data.");
     const match = item.data.match(/^data:([^;,]+);base64,([a-zA-Z0-9+/=\r\n]+)$/);
-    if (!match) throw new Error("A file attachment could not be read. Please attach it again.");
+    if (!match) throw badInput("A file attachment could not be read. Please attach it again.");
     const type = match[1].toLowerCase();
     if (!allowedImages.has(type) && type !== "application/pdf") {
-      throw new Error("Only PNG, JPEG, WebP, GIF, PDF, and text/code attachments are supported.");
+      throw badInput("Only PNG, JPEG, WebP, GIF, PDF, and text/code attachments are supported.");
     }
-    if (item.type.toLowerCase() !== type) throw new Error("An attachment's file type did not match its content.");
+    if (item.type.toLowerCase() !== type) throw badInput("An attachment's file type did not match its content.");
     const encoded = match[2].replace(/\s/g, "");
     const approxBytes = Math.floor(encoded.length * 3 / 4);
-    if (approxBytes > 4 * 1024 * 1024) throw new Error("Images and PDFs must be 4 MB or smaller.");
+    if (approxBytes > 4 * 1024 * 1024) throw badInput("Images and PDFs must be 4 MB or smaller.");
     attachments.push({ name, type, dataUrl: item.data, base64: encoded });
   }
   return attachments;
@@ -181,10 +181,10 @@ function validateAttachments(value) {
 
 function validateHistory(value) {
   if (value === undefined) return [];
-  if (!Array.isArray(value) || value.length > 20) throw new Error("Conversation history is too long. Start a new chat and try again.");
+  if (!Array.isArray(value) || value.length > 20) throw badInput("Conversation history is too long. Start a new chat and try again.");
   return value.map((turn) => {
     if (!turn || !["user", "assistant"].includes(turn.role) || typeof turn.content !== "string") {
-      throw new Error("The conversation history contains an invalid message.");
+      throw badInput("The conversation history contains an invalid message.");
     }
     return { role: turn.role, content: turn.content.slice(0, 20000) };
   });
