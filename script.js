@@ -31,6 +31,7 @@ const TEXT_EXTENSIONS = new Set(["txt", "md", "csv", "json", "js", "ts", "py", "
 const IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "image/gif"]);
 const MAX_FILE_BYTES = 4 * 1024 * 1024;
 const MAX_TEXT_BYTES = 200 * 1024;
+const MAX_TOTAL_FILE_BYTES = 7 * 1024 * 1024;
 const MAX_FILES = 5;
 
 function resizeInput() {
@@ -206,6 +207,11 @@ fileInput.addEventListener("change", () => {
     const limit = kind.kind === "text" ? MAX_TEXT_BYTES : MAX_FILE_BYTES;
     if (file.size > limit) {
       showToast(file.name + " is too large. Limit: " + (kind.kind === "text" ? "200 KB for text/code files." : "4 MB for images and PDFs."));
+      continue;
+    }
+    const currentBytes = attachments.reduce((sum, item) => sum + item.file.size, 0);
+    if (currentBytes + file.size > MAX_TOTAL_FILE_BYTES) {
+      showToast("Keep the combined attachments under 7 MB per message.");
       continue;
     }
     attachments.push({ file, kind: kind.kind, type: kind.type });
