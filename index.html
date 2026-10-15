@@ -19,6 +19,7 @@
       <p class="side-label">WORKSPACE</p>
       <button class="side-link active" id="homeLink"><span class="nav-icon">◫</span> Discover</button>
       <button class="side-link" id="historyLink"><span class="nav-icon">◷</span> Recent chats</button>
+      <button class="side-link" id="notesLink"><span class="nav-icon">▤</span> Offline notes</button>
       <div class="sidebar-divider"></div>
       <p class="side-label">YOUR CHATS</p>
       <div class="recent-list" id="recentList"><div class="empty-recents">Your conversations<br>will show up here.</div></div>
@@ -81,6 +82,14 @@
       </footer>
     </main>
   </div>
+  <section class="notes-overlay" id="notesOverlay" hidden aria-labelledby="notesHeading" role="dialog" aria-modal="true">
+    <div class="notes-panel">
+      <header class="notes-header"><div><p class="notes-kicker">YOUR PRIVATE WORKSPACE</p><h2 id="notesHeading">Offline notes</h2><p class="notes-subtitle">Saved on this device. No account or API key needed.</p></div><button type="button" class="icon-button" id="closeNotes" aria-label="Close notes">×</button></header>
+      <form id="noteForm" class="note-form"><label for="noteTitle">Title</label><input id="noteTitle" maxlength="100" placeholder="A thought worth keeping" required><label for="noteBody">Your note</label><textarea id="noteBody" maxlength="20000" rows="5" placeholder="Write anything…"></textarea><div class="note-actions"><span id="noteCount">0 notes saved</span><button type="submit" class="note-save" id="saveNote">Save note</button></div></form>
+      <div class="notes-list-heading">SAVED NOTES <span>Stored locally in this app</span></div><div id="notesList" class="notes-list"><p class="notes-empty">Your saved notes will appear here.</p></div>
+      <p class="notes-privacy">Notes stay in this browser/app profile. Clearing app data may remove them, so export important notes elsewhere.</p>
+    </div>
+  </section>
   <script src="script.js"></script>
 </body>
 </html>
