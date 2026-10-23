@@ -17,11 +17,11 @@ On a Windows development computer:
 5. Run `npm run desktop` to launch the desktop app during development.
 6. Run `npm run dist:win` to create a Windows installer in the `dist` folder.
 
-**Current limitation:** easy in-app API-key settings and a hosted Zeno cloud service are not implemented yet. AI chat still needs an OpenAI or Google Gemini API key configured for the server. Do not share this as a finished public release yet.
+**Current limitation:** easy in-app API-key settings and a hosted Zeno cloud service are not implemented yet. AI chat still needs an OpenAI or Google Gemini API key configured for the server.
 
 ## Run the web version locally
 
-1. Install Node.js 22 or newer.
+1. Installation Node.js 22 or newer.
 2. Copy `.env.example` to a new file named `.env`.
 3. Add your provider key: `OPENAI_API_KEY=` or `GEMINI_API_KEY=`.
 4. Run `npm start` in the Zeno folder.
