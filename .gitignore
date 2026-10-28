@@ -5,6 +5,9 @@
 
 # Node.js and Electron build output
 node_modules/
+.npm-cache/
+.electron-builder-cache/
+.zeno/
 dist/
 release/
 out/
@@ -17,3 +20,5 @@ pnpm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+
