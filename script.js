@@ -96,9 +96,12 @@ function renderModelPicker(providers, warnings = []) {
     currentProvider = first.provider;
     currentModel = first.id;
     modelSelect.value = first.provider + "::" + first.id;
-    modelStatus.textContent = availableModels.length + " model" + (availableModels.length === 1 ? "" : "s") + " available";
+    const localOnly = availableModels.length === 1 && first.provider === "local";
+    modelStatus.textContent = localOnly ? "On-device AI ready · downloads on first chat" : availableModels.length + " model" + (availableModels.length === 1 ? "" : "s") + " available";
     modelStatus.className = "model-status status-good";
-    disclaimer.textContent = "Your selected provider may charge for API usage. Check its pricing before sending messages.";
+    disclaimer.textContent = localOnly
+      ? "No API key needed. The first chat downloads the local model once (about 0.9 GB); after that it runs on this computer."
+      : "Your selected provider may charge for API usage. Check its pricing before sending messages. On-device AI is also available.";
     setConnection(true, providers.map((provider) => provider.label).join(" + "));
   } else {
     const option = document.createElement("option");
@@ -148,6 +151,9 @@ modelSelect.addEventListener("change", () => {
   const picked = availableModels.find((model) => model.provider === currentProvider && model.id === currentModel);
   modelStatus.textContent = picked ? picked.providerLabel + " · " + picked.id : "Choose an available model";
   modelStatus.className = "model-status" + (picked ? " status-good" : "");
+  disclaimer.textContent = picked?.provider === "local"
+    ? "No API key needed. The first chat downloads the local model once (about 0.9 GB); after that it runs on this computer."
+    : "Your selected provider may charge for API usage. Check its pricing before sending messages.";
 });
 
 function getFileKind(file) {
@@ -344,6 +350,10 @@ form.addEventListener("submit", async (event) => {
   resizeInput();
   pageTitle.textContent = visiblePrompt.length > 30 ? visiblePrompt.slice(0, 30).trimEnd() + "…" : visiblePrompt;
   const thinkingRow = addThinkingMessage();
+  if (currentProvider === "local") {
+    modelStatus.textContent = "Starting on-device AI · first run downloads about 0.9 GB";
+    modelStatus.className = "model-status status-warning";
+  }
   conversation.scrollTop = conversation.scrollHeight;
 
   try {
@@ -383,7 +393,14 @@ form.addEventListener("submit", async (event) => {
   } catch (error) {
     thinkingRow.remove();
     addMessage("I couldn't get a response. " + (error.message || "Please check the server and API settings, then try again."), "assistant");
-    showToast("Zeno couldn't complete that request. Check the server terminal and provider API configuration.");
+    if (currentProvider === "local") {
+      modelStatus.textContent = "On-device model unavailable";
+      modelStatus.title = error.message || "The local model could not start.";
+      modelStatus.className = "model-status status-error";
+    }
+    showToast(currentProvider === "local"
+      ? "Zeno couldn't start its local model. Check the error in the chat and your internet connection."
+      : "Zeno couldn't complete that request. Check the server terminal and provider API configuration.");
   } finally {
     isSending = false;
     sendButton.disabled = false;
@@ -424,3 +441,4 @@ document.addEventListener("click", (event) => {
 });
 
 loadModels();
+

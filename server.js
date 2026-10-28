@@ -4,6 +4,9 @@ const path = require("node:path");
 
 const ROOT = __dirname;
 const MAX_BODY_BYTES = 11 * 1024 * 1024;
+const LOCAL_MODEL_ID = "qwen3-0.6b-local";
+const LOCAL_MODEL_REPO = "onnx-community/Qwen3-0.6B-ONNX";
+let localGeneratorPromise;
 loadEnvFile();
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "127.0.0.1";
@@ -142,18 +145,22 @@ async function getGeminiModels() {
 async function listModels() {
   const hasOpenAI = Boolean(openAIKey());
   const hasGemini = Boolean(geminiKey());
+  const providers = [{
+    id: "local",
+    label: "On-device AI",
+    models: [{ id: LOCAL_MODEL_ID, label: "Zeno Local · Qwen3 0.6B (downloads once)" }]
+  }];
   const tasks = [];
   if (hasOpenAI) tasks.push(getOpenAIModels());
   if (hasGemini) tasks.push(getGeminiModels());
   if (tasks.length === 0) {
     return {
       serverReady: true,
-      providers: [],
-      warnings: ["No provider credentials configured. Add OPENAI_API_KEY or GEMINI_API_KEY to your local .env file."]
+      providers,
+      warnings: []
     };
   }
   const settled = await Promise.allSettled(tasks);
-  const providers = [];
   const warnings = [];
   for (let i = 0; i < settled.length; i++) {
     const item = settled[i];
@@ -265,6 +272,53 @@ function buildGeminiParts(message, attachments) {
   return parts;
 }
 
+async function getLocalGenerator() {
+  if (!localGeneratorPromise) {
+    localGeneratorPromise = (async () => {
+      const cacheDir = path.join(process.env.ZENO_CONFIG_DIR || path.join(ROOT, ".zeno"), "models");
+      fs.mkdirSync(cacheDir, { recursive: true });
+      const { env, pipeline } = await import("@huggingface/transformers");
+      env.cacheDir = cacheDir;
+      return pipeline("text-generation", LOCAL_MODEL_REPO, { dtype: "q4", device: "cpu" });
+    })().catch((error) => {
+      localGeneratorPromise = undefined;
+      throw new Error("Zeno could not download or start its on-device AI model. Check your internet connection and make sure you have about 1 GB of free disk space. Details: " + error.message);
+    });
+  }
+  return localGeneratorPromise;
+}
+
+async function askLocal(message, history, attachments) {
+  if (attachments.some((file) => typeof file.content !== "string")) {
+    throw badInput("The on-device model currently reads text and code files. Use an OpenAI or Gemini model for images and PDFs.");
+  }
+  let prompt = message;
+  for (const file of attachments) {
+    const remaining = Math.max(0, 6000 - prompt.length);
+    if (!remaining) break;
+    prompt += "\n\n[Text attachment: " + file.name + "]\n" + file.content.slice(0, remaining);
+  }
+  const messages = [
+    { role: "system", content: "You are Zeno, a helpful, honest, general-purpose AI assistant. Be clear, useful, and friendly. Give the answer directly without showing private reasoning. /no_think" },
+    ...history.slice(-6).map((turn) => ({ role: turn.role, content: turn.content.slice(-2500) })),
+    { role: "user", content: prompt.slice(0, 6000) || "Please inspect the attached text file." }
+  ];
+  const generator = await getLocalGenerator();
+  const result = await generator(messages, {
+    max_new_tokens: 384,
+    do_sample: true,
+    temperature: 0.7,
+    top_p: 0.9
+  });
+  const generated = result?.[0]?.generated_text;
+  const rawReply = Array.isArray(generated) ? generated.at(-1)?.content : generated;
+  const reply = typeof rawReply === "string"
+    ? rawReply.replace(/<think>[\s\S]*?(?:<\/think>|$)/gi, "").trim()
+    : "";
+  if (!reply) throw new Error("The on-device model returned an empty response. Please try again.");
+  return reply;
+}
+
 async function askGemini(model, message, history, attachments) {
   const contents = history.map((turn) => ({
     role: turn.role === "assistant" ? "model" : "user",
@@ -301,7 +355,7 @@ async function handleChat(req, res) {
   const provider = body.provider;
   const model = body.model;
   const message = typeof body.message === "string" ? body.message.trim() : "";
-  if (!["openai", "gemini"].includes(provider)) return json(res, 400, { error: "Choose a supported provider." });
+  if (!["openai", "gemini", "local"].includes(provider)) return json(res, 400, { error: "Choose a supported provider." });
   if (typeof model !== "string" || !/^[a-zA-Z0-9._:-]{1,150}$/.test(model)) return json(res, 400, { error: "Choose a valid model from the model menu." });
   if (message.length > 20000) return json(res, 413, { error: "Messages must be 20,000 characters or fewer." });
   const history = validateHistory(body.history);
@@ -309,11 +363,14 @@ async function handleChat(req, res) {
   if (!message && attachments.length === 0) return json(res, 400, { error: "Write a message or attach a file first." });
   if (provider === "openai" && !openAIKey()) return json(res, 400, { error: "No OpenAI API key is configured on this server." });
   if (provider === "gemini" && !geminiKey()) return json(res, 400, { error: "No Gemini API key is configured on this server." });
+  if (provider === "local" && model !== LOCAL_MODEL_ID) return json(res, 400, { error: "Choose the on-device model from the model menu." });
 
   const reply = provider === "openai"
     ? await askOpenAI(model, message, history, attachments)
-    : await askGemini(model, message, history, attachments);
-  json(res, 200, { reply, provider, providerLabel: provider === "openai" ? "OpenAI" : "Google Gemini", model });
+    : provider === "gemini"
+      ? await askGemini(model, message, history, attachments)
+      : await askLocal(message, history, attachments);
+  json(res, 200, { reply, provider, providerLabel: provider === "openai" ? "OpenAI" : provider === "gemini" ? "Google Gemini" : "On-device AI", model });
 }
 
 const server = http.createServer(async (req, res) => {
@@ -378,3 +435,4 @@ if (require.main === module) {
 }
 
 module.exports = { server };
+
