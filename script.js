@@ -393,6 +393,11 @@ form.addEventListener("submit", async (event) => {
   } catch (error) {
     thinkingRow.remove();
     addMessage("I couldn't get a response. " + (error.message || "Please check the server and API settings, then try again."), "assistant");
+    if (currentProvider === "local") {
+      modelStatus.textContent = "On-device model unavailable";
+      modelStatus.title = error.message || "The local model could not start.";
+      modelStatus.className = "model-status status-error";
+    }
     showToast(currentProvider === "local"
       ? "Zeno couldn't start its local model. Check the error in the chat and your internet connection."
       : "Zeno couldn't complete that request. Check the server terminal and provider API configuration.");
