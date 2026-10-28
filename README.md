@@ -33,7 +33,7 @@ Do not open `index.html` directly; AI chat requires the local server.
 - Responsive chat interface with dark/light themes
 - No-key on-device AI, plus optional OpenAI and Google Gemini models
 - Server-side AI requests; keys are not sent to browser JavaScript
-- Supported image, PDF, text, and code attachments
+- Image and PDF attachments for hosted models; text and code files also work with the on-device model
 - Short conversation context while the page remains open
 
 ## Security and costs
